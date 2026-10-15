@@ -1,66 +1,75 @@
-# Tuần 5 (14/10 – 20/10/2026): Môi trường mô phỏng và bài lab GPIO, nút nhấn, ngắt, Timer
+# Tuần 5 (14/10 – 20/10/2026): Mô phỏng bài GPIO, nút nhấn, ngắt ngoài và Timer
 
-Chưa có bo mạch (PCB và linh kiện về khoảng 3 tuần cuối kỳ) nên theo hướng dẫn của GVHD, tuần này
-dựng môi trường biên dịch + mô phỏng và viết trước các bài lab của tuần 6 kế hoạch cũ.
-Kế hoạch mới: [`docs/ke-hoach/ke-hoach-dieu-chinh.md`](../ke-hoach/ke-hoach-dieu-chinh.md).
+Tuần này cài đặt công cụ biên dịch, dựng mạch mô phỏng trên Proteus theo đúng phân chân của KIT và viết
+bốn bài lab đầu tiên. Vì mạch mô phỏng nối giống hệt bo thật nên file `.hex` chạy được trên mô phỏng cũng
+nạp thẳng vào bo được, không phải sửa gì.
 
-## 1. Môi trường
+## 1. Công cụ
 
-| Công cụ | Phiên bản | Ghi chú |
-|---------|-----------|---------|
-| avr-gcc | 16.1.0 (Scoop: `scoop install avr-gcc`) | kèm avr-libc, avr-objcopy, avr-size |
-| avrdude | dùng khi có bo | `make flash` / `build.ps1 -Flash` qua USBasp |
-| Proteus 8 | phòng thực hành | Hướng dẫn: [`simulation/README.md`](../../simulation/README.md) |
-| KiCad | 10.0.6 | Thiết kế mạch (tuần 3–4) |
+- **avr-gcc 16.1.0** (cài bằng `scoop install avr-gcc`), đi kèm avr-libc, avr-objcopy, avr-size.
+- **avrdude** để nạp qua USBasp.
+- **Proteus 8** để mô phỏng, cách dựng mạch ở [`simulation/README.md`](../../simulation/README.md).
 
-Build:
+Build tất cả các bài:
 
 ```powershell
 cd firmware
 powershell -ExecutionPolicy Bypass -File build.ps1
 ```
 
-`make` vẫn dùng được nếu repo nằm ở đường dẫn không dấu (make trên Windows lỗi với thư mục kiểu "Đồ án 2").
+Ban đầu định dùng `make`, nhưng make trên Windows không đọc được thư mục có dấu như "Đồ án 2" nên viết thêm
+file `build.ps1` chạy bằng PowerShell. Makefile vẫn để lại, dùng được khi đặt project ở đường dẫn không dấu.
 
-## 2. Bài lab đã viết
+## 2. Các bài lab
 
-| Bài | Nội dung | Kỹ thuật | Flash (byte) |
-|-----|----------|----------|-------------:|
-| [`01_gpio_led`](../../firmware/labs/01_gpio_led/main.c) | Nháy 8 LED, LED chạy, đếm nhị phân | `DDRC`, `PORTC`, `_delay_ms` | 286 |
-| [`02_button`](../../firmware/labs/02_button/main.c) | SW1 xoay LED, SW2 đảo LED | Đọc `PIND`, chống dội 20 ms, bắt cạnh nhấn | 230 |
-| [`03_ext_interrupt`](../../firmware/labs/03_ext_interrupt/main.c) | INT0 tăng bộ đếm, INT1 xóa; PC7 nháy nền 1 Hz | `MCUCR` cạnh xuống, `GICR`, khóa ngắt 150 ms chống dội | 356 |
-| [`04_timer`](../../firmware/labs/04_timer/main.c) | Timer1 CTC xuất 1 kHz ở OC1A; Timer0 tick 1 ms | CTC, so khớp đảo chân, ISR `TIMER0_COMP` | 384 |
+**[01_gpio_led](../../firmware/labs/01_gpio_led/main.c)** – Cho 8 LED nháy cùng lúc, chạy từ PC0 tới PC7,
+rồi đếm nhị phân 0–255. Bài này để kiểm tra từng LED và từng chân của PORTC.
 
-Cả 4 bài biên dịch sạch với `-Wall -Wextra -Werror` (avr-gcc 16.1.0, `-Os`).
+**[02_button](../../firmware/labs/02_button/main.c)** – Đọc nút bằng cách hỏi vòng. Bấm SW1 thì LED sáng
+dịch sang trái một vị trí, bấm SW2 thì đảo toàn bộ LED. Có chống dội 20 ms và chỉ xử lý lúc vừa bấm xuống,
+giữ nút thì không lặp lại.
 
-### Tính toán Timer (bài 04)
+**[03_ext_interrupt](../../firmware/labs/03_ext_interrupt/main.c)** – Dùng ngắt ngoài bắt cạnh xuống.
+INT0 (SW1) tăng bộ đếm và hiện lên PC0–PC6, INT1 (SW2) xóa bộ đếm về 0. Trong lúc đó vòng lặp chính chỉ nháy
+PC7 mỗi giây, để thấy rõ nút được xử lý bằng ngắt. Sau mỗi lần ngắt, chương trình khóa ngắt đó 150 ms để
+tránh đếm nhiều lần do dội phím.
 
-- Timer1, CTC, prescaler N = 8: `OCR1A = F_CPU / (2·N·f) − 1 = 8 000 000 / (2·8·1000) − 1 = 499`
-  → OC1A đảo mỗi 0.5 ms → **f = 1000 Hz, chu kỳ 1 ms, duty 50 %**.
-- Timer0, CTC, prescaler 64: `OCR0 = 8 000 000 / 64 / 1000 − 1 = 124` → ngắt mỗi **1.000 ms**.
+**[04_timer](../../firmware/labs/04_timer/main.c)** – Timer1 chạy chế độ CTC, tự đảo chân OC1A (PD5) để ra
+xung vuông 1 kHz. Timer0 cũng chạy CTC, tạo ngắt mỗi 1 ms để làm bộ đếm thời gian; dùng nó cho PC0 nháy 1 Hz,
+PC1 nháy 5 Hz và PC2–PC7 đếm số giây.
 
-## 3. Bảng kiểm thử trên mô phỏng
+Cả bốn bài biên dịch không có cảnh báo với `-Wall -Wextra -Werror`. Kích thước sau khi build lần lượt là
+286, 230, 356 và 384 byte.
 
-Cột "Kết quả" điền sau khi chạy trên Proteus (kèm ảnh trong `simulation/anh/`).
+### Tính thông số Timer
 
-| # | Bài | Thao tác | Kết quả mong đợi | Kết quả | Ghi chú |
-|--:|-----|----------|------------------|---------|---------|
-| 1 | 01 | Run | 8 LED nháy cùng lúc 4 lần, chu kỳ 400 ms | | |
-| 2 | 01 | Quan sát tiếp | LED sáng lần lượt PC0 → PC7, 2 vòng | | |
+- Timer1, CTC, chia tần N = 8:
+  `OCR1A = F_CPU / (2 · N · f) − 1 = 8 000 000 / (2 · 8 · 1000) − 1 = 499`.
+  Chân OC1A đảo trạng thái mỗi 0,5 ms nên ra xung 1000 Hz, chu kỳ 1 ms, độ rộng xung 50 %.
+- Timer0, CTC, chia tần 64: `OCR0 = 8 000 000 / 64 / 1000 − 1 = 124`, tức là cứ 1 ms ngắt một lần.
+
+## 3. Kết quả chạy mô phỏng
+
+| # | Bài | Thao tác | Kết quả mong đợi | Kết quả thực tế | Ghi chú |
+|--:|-----|----------|------------------|-----------------|---------|
+| 1 | 01 | Chạy mô phỏng | 8 LED nháy cùng lúc 4 lần, chu kỳ 400 ms | | |
+| 2 | 01 | Quan sát tiếp | LED sáng lần lượt từ PC0 tới PC7, 2 vòng | | |
 | 3 | 01 | Quan sát tiếp | LED đếm nhị phân 0 → 255, mỗi bước 50 ms | | |
-| 4 | 02 | Nhấn SW1 1 lần | LED sáng dịch trái đúng 1 vị trí | | |
+| 4 | 02 | Bấm SW1 một lần | LED dịch trái đúng 1 vị trí | | |
 | 5 | 02 | Giữ SW1 | Không dịch thêm khi còn giữ | | |
-| 6 | 02 | Nhấn SW2 | Toàn bộ LED đảo trạng thái | | |
-| 7 | 03 | Nhấn SW1 n lần | PC0..PC6 hiển thị n (nhị phân) | | |
-| 8 | 03 | Nhấn SW2 | Bộ đếm về 0 | | |
-| 9 | 03 | Không nhấn | PC7 nháy 1 Hz đều | | |
-| 10 | 04 | Counter Timer ở PD5 | 1.000 kHz | | |
-| 11 | 04 | Oscilloscope ở PD5 | Xung vuông 5 V, chu kỳ 1 ms, duty 50 % | | |
-| 12 | 04 | Quan sát LED | PC0 nháy 1 Hz, PC1 nháy 5 Hz, PC2..PC7 đếm giây | | |
-| 13 | Tất cả | Để JTAGEN = Programmed | PC2..PC5 không hoạt động (kiểm chứng cần tắt JTAG) | | |
+| 6 | 02 | Bấm SW2 | Tất cả LED đảo trạng thái | | |
+| 7 | 03 | Bấm SW1 n lần | PC0–PC6 hiện số n dạng nhị phân | | |
+| 8 | 03 | Bấm SW2 | Bộ đếm về 0 | | |
+| 9 | 03 | Không bấm gì | PC7 nháy đều 1 Hz | | |
+| 10 | 04 | Đo PD5 bằng Counter Timer | 1,000 kHz | | |
+| 11 | 04 | Xem PD5 trên Oscilloscope | Xung vuông 5 V, chu kỳ 1 ms, độ rộng 50 % | | |
+| 12 | 04 | Quan sát LED | PC0 nháy 1 Hz, PC1 nháy 5 Hz, PC2–PC7 đếm giây | | |
+| 13 | Cả 4 bài | Để JTAGEN ở Programmed | PC2–PC5 không hoạt động, cho thấy phải tắt JTAG | | |
 
-## 4. Nhật ký lỗi / vấn đề gặp phải
+Ảnh chụp mô phỏng lưu trong `simulation/anh/`.
 
-| Ngày | Vấn đề | Nguyên nhân | Cách khắc phục |
-|------|--------|-------------|----------------|
-| 15/10 | `make` báo "No targets specified" / "readdir: Invalid argument" | GNU make bản Windows không đọc được đường dẫn có dấu tiếng Việt | Viết thêm `build.ps1` (PowerShell) gọi trực tiếp avr-gcc |
+## 4. Lỗi gặp phải
+
+| Ngày | Hiện tượng | Nguyên nhân | Cách xử lý |
+|------|------------|-------------|------------|
+| 15/10 | `make` báo "No targets specified" và "readdir: Invalid argument" | make trên Windows không đọc được đường dẫn có dấu tiếng Việt | Viết `build.ps1` gọi thẳng avr-gcc |

@@ -1,7 +1,7 @@
 # Danh mục vật tư (BOM) – KIT ATmega16
 
-BOM xuất tự động từ schematic: [`hardware/output/bom.csv`](../../hardware/output/bom.csv).
-Bảng dưới gom theo nhóm mua hàng; đơn giá là giá tham khảo cửa hàng linh kiện tại Hà Nội (tháng 9/2026).
+File BOM xuất từ KiCad nằm ở [`hardware/output/bom.csv`](../../hardware/output/bom.csv). Bảng dưới đây
+gom lại theo kiểu đi mua cho tiện, giá là giá tham khảo ở các cửa hàng linh kiện Hà Nội tháng 9/2026.
 
 ## 1. Linh kiện trên bo
 
@@ -44,20 +44,19 @@ Bảng dưới gom theo nhóm mua hàng; đơn giá là giá tham khảo cửa h
 | 30 | Adapter 9 V / 1 A | Jack 5.5/2.1 mm | 1 | Tự có | 0 | 0 |
 | 31 | PCB 2 lớp | 150 × 110 mm, đặt gia công | 2 bo | Đặt gia công | 80.000 | 160.000 |
 
-**Tổng dự kiến:** 412.600 đ (linh kiện trên bo 152.600 đ, module 100.000 đ, PCB 160.000 đ) — sát ngân sách 412.000 đ trong kế hoạch.
+**Tổng dự kiến:** 412.600 đ, gồm linh kiện trên bo 152.600 đ, module 100.000 đ và PCB 160.000 đ. Con số này
+gần như bằng 412.000 đ đã ghi trong kế hoạch.
 
-## 3. Phân loại mua – mượn – tận dụng
+## 3. Mua, mượn hay tận dụng
 
-- **Tự có / đã có:** USBasp, adapter 9 V, (có thể) LCD1602 và USB-UART.
-- **Mượn phòng D8-705 nếu thiếu:** oscilloscope, nguồn DC giới hạn dòng, đồng hồ vạn năng, mỏ hàn.
-- **Mua mới:** toàn bộ linh kiện nhóm 1, keypad 4×4.
-- **Dự phòng:** mua thêm 1 ATmega16A, 1 LM7805, 2 thạch anh 8 MHz, 10 tụ 100 nF (linh kiện dễ hỏng khi hàn).
+- Đã có sẵn: USBasp, adapter 9 V; LCD1602 và module USB-UART có thể tận dụng lại.
+- Mượn ở phòng D8-705 khi cần: oscilloscope, nguồn DC có giới hạn dòng, đồng hồ vạn năng, mỏ hàn.
+- Mua mới: các linh kiện ở mục 1 và bàn phím 4×4.
+- Mua dư thêm 1 ATmega16A, 1 LM7805, 2 thạch anh 8 MHz và 10 tụ 100 nF phòng khi hàn hỏng.
 
-## 4. Thay đổi so với kế hoạch ban đầu
+## 4. Khác so với danh sách trong kế hoạch
 
-| Thay đổi | Lý do |
-|----------|-------|
-| Thêm L1 10 µH lọc AVCC | Theo AN2519 và datasheet mục ADC Noise Canceling |
-| Thêm D3 1N4148 trên RESET | Theo AN2519, chống xung âm/ESD khi nhấn reset |
-| Thêm 4 header 1×10 mở rộng cổng | Để nối dây thử nghiệm và đo tín hiệu |
-| Header ISP dùng loại hộp IDC | Tránh cắm ngược cáp USBasp |
+- Thêm cuộn L1 10 µH để lọc nguồn AVCC, theo AN2519 và phần chống nhiễu ADC trong datasheet.
+- Thêm diode D3 1N4148 ở chân RESET, cũng theo AN2519, để chặn xung âm khi bấm reset.
+- Thêm 4 header 1×10 đưa các cổng ra ngoài cho dễ nối dây và đo tín hiệu.
+- Header ISP đổi sang loại hộp IDC để không cắm ngược cáp USBasp.

@@ -1,37 +1,40 @@
-# Tuần 1 (16/09 – 22/09/2026): Phân tích yêu cầu và sơ đồ khối
+# Tuần 1 (16/09 – 22/09/2026): Tìm hiểu yêu cầu và lập sơ đồ khối
 
-## 1. Mục tiêu đề tài
+## 1. Mục tiêu
+
+Tuần đầu tập trung đọc đề tài, datasheet ATmega16 và tài liệu AN2519 để nắm được bo KIT cần có những
+khối gì. Mục tiêu chung của đề tài:
 
 - Thiết kế bo KIT ATmega16 dựa trên sơ đồ tham khảo và datasheet.
-- Làm đủ quy trình: schematic → PCB → hàn lắp → kiểm tra bo.
-- Lập trình và kiểm thử các ngoại vi: GPIO, ngắt, Timer, ADC, UART, LCD, ma trận phím.
-- Ghép các khối thành bài tập tổng hợp theo yêu cầu của GVHD.
-- Xây dựng quy trình đo kiểm, ghi lỗi và xác nhận cách khắc phục.
+- Làm trọn quy trình từ schematic, PCB đến hàn lắp và kiểm tra bo.
+- Viết chương trình thử cho từng ngoại vi: GPIO, ngắt, Timer, ADC, UART, LCD, bàn phím.
+- Ghép các phần lại thành một bài tổng hợp theo yêu cầu của thầy.
+- Ghi lại quá trình đo kiểm, các lỗi gặp phải và cách sửa.
 
 ## 2. Yêu cầu chức năng
 
-| Mã | Yêu cầu | Cách kiểm chứng |
-|----|---------|-----------------|
-| FR1 | Bo được cấp nguồn đúng, không chập; ATmega16 nạp được chương trình | Đo VCC/AVCC = 5 V ± 5 %, nạp USBasp đọc đúng chữ ký `1E 94 03` |
-| FR2 | GPIO điều khiển LED và đọc nút nhấn | Bài `01_gpio_led`, `02_button` |
-| FR3 | Ngắt ngoài phát hiện đúng sự kiện | Bài `03_ext_interrupt` (INT0/INT1 cạnh xuống) |
-| FR4 | Timer/Counter tạo chu kỳ, sự kiện định thời | Bài `04_timer`: OC1A = 1 kHz, tick 1 ms |
-| FR5 | ADC đọc điện áp biến trở, trả về giá trị hợp lý | Bảng so sánh điện áp đo – giá trị ADC |
-| FR6 | UART truyền/nhận với máy tính | Log terminal 9600 8N1 |
-| FR7 | LCD1602 hiển thị dữ liệu và trạng thái | Ảnh/video LCD |
-| FR8 | Quét ma trận phím 4×4, chống dội | Log phím nhấn, thử nhấn giữ/nhấn nhanh |
-| FR9 | Ghép ngoại vi thành bài tổng hợp | Video demo |
-| FR10 | Mỗi bước có mã nguồn và minh chứng | Thư mục `firmware/`, `docs/`, commit Git |
+| Mã | Yêu cầu | Kiểm tra bằng cách |
+|----|---------|--------------------|
+| FR1 | Bo lên nguồn đúng, không chập, ATmega16 nạp được chương trình | Đo VCC/AVCC khoảng 5 V; avrdude đọc đúng chữ ký `1E 94 03` |
+| FR2 | GPIO bật tắt được LED và đọc được nút nhấn | Bài `01_gpio_led`, `02_button` |
+| FR3 | Ngắt ngoài bắt đúng sự kiện | Bài `03_ext_interrupt` |
+| FR4 | Timer tạo được chu kỳ, sự kiện định thời | Bài `04_timer`: OC1A ra 1 kHz, tick 1 ms |
+| FR5 | ADC đọc điện áp biến trở ra giá trị hợp lý | So sánh điện áp đo được với giá trị ADC |
+| FR6 | UART gửi nhận được với máy tính | Log trên terminal, 9600 8N1 |
+| FR7 | LCD1602 hiển thị được dữ liệu | Ảnh hoặc video |
+| FR8 | Quét được bàn phím 4×4, có chống dội | Log phím nhấn |
+| FR9 | Các ngoại vi chạy chung trong bài tổng hợp | Video demo |
+| FR10 | Bước nào cũng có mã nguồn và minh chứng | Thư mục `firmware/`, `docs/` và lịch sử commit |
 
-## 3. Sơ đồ khối hệ thống
+## 3. Sơ đồ khối
 
 ```mermaid
 flowchart LR
-    DC["Jack DC 9–12 V"] --> PROT["Diode chống ngược<br/>1N4007"] --> REG["LM7805<br/>+ tụ lọc"]
+    DC["Jack DC 9–12 V"] --> PROT["1N4007<br/>chống ngược cực"] --> REG["LM7805<br/>và tụ lọc"]
     REG -- "+5V" --> MCU
     REG -- "+5V" --> LCF["Lọc LC 10 µH + 100 nF"] -- AVCC --> MCU
-    CLK["Thạch anh 8 MHz<br/>+ 2×22 pF"] --> MCU
-    RST["Mạch RESET<br/>10 kΩ + 100 nF + nút + 1N4148"] --> MCU
+    CLK["Thạch anh 8 MHz<br/>2 tụ 22 pF"] --> MCU
+    RST["Mạch reset<br/>10 kΩ, 100 nF, nút, 1N4148"] --> MCU
     ISP["Header ISP 10 chân<br/>(USBasp)"] <--> MCU
     MCU["ATmega16A-PU<br/>DIP-40"]
     MCU -- PORTC --> LED["8 LED đơn"]
@@ -39,30 +42,30 @@ flowchart LR
     POT["Biến trở 10 kΩ"] -- "PA0 / ADC0" --> MCU
     MCU <-- "PD0 RXD / PD1 TXD" --> UART["USB-UART<br/>CP2102 / CH340"] <--> PC["Máy tính"]
     MCU -- "PA4..PA7, PD6 RS, PD7 EN" --> LCD["LCD1602 (4 bit)"]
-    MCU <-- PORTB --> KEY["Ma trận phím 4×4"]
-    MCU <--> HDR["4 header mở rộng PORTA..D"]
+    MCU <-- PORTB --> KEY["Bàn phím 4×4"]
+    MCU <--> HDR["Header PORTA..PORTD"]
 ```
 
-## 4. Các khối chức năng (theo datasheet ATmega16 và AN2519)
+## 4. Các khối chính
 
-| Khối | Nội dung chính | Ghi chú thiết kế |
-|------|----------------|------------------|
-| Nguồn | Jack DC → 1N4007 → LM7805 → +5 V | Tụ 470 µF + 100 nF đầu vào, 100 µF + 100 nF đầu ra; LED báo nguồn |
-| Clock | Thạch anh 8 MHz, 2 tụ 22 pF | Fuse CKSEL = 1111, SUT = 11 |
-| Reset | Kéo lên 10 kΩ, tụ 100 nF, nút nhấn, diode 1N4148 về VCC | Theo khuyến nghị AN2519, tương thích nạp ISP |
-| Nguồn analog | AVCC qua cuộn 10 µH + tụ 100 nF; AREF có tụ 100 nF | Datasheet: AVCC chênh VCC không quá ±0.3 V |
-| Nạp ISP | Header 10 chân chuẩn USBasp (MOSI, MISO, SCK, RESET) | Jumper JP1 cho phép lấy 5 V từ mạch nạp |
-| Ngoại vi | LED, nút, biến trở, UART, LCD, keypad, header cổng | Xem bảng phân chân tuần 2 |
+- **Nguồn:** điện áp từ jack DC qua 1N4007 để chống cắm ngược, rồi vào LM7805 lấy ra 5 V. Đầu vào có tụ
+  470 µF và 100 nF, đầu ra có 100 µF và 100 nF, thêm một LED báo nguồn.
+- **Dao động:** thạch anh 8 MHz với hai tụ 22 pF. Fuse đặt CKSEL = 1111, SUT = 11.
+- **Reset:** điện trở kéo lên 10 kΩ, tụ 100 nF, nút nhấn và một diode 1N4148 về VCC như AN2519 gợi ý.
+  Mạch này vẫn để nạp ISP bình thường.
+- **Nguồn analog:** AVCC lấy từ 5 V qua cuộn 10 µH và tụ 100 nF, AREF có tụ 100 nF xuống GND. Datasheet
+  yêu cầu AVCC không lệch VCC quá ±0,3 V.
+- **Nạp ISP:** header 10 chân theo chuẩn USBasp. Jumper JP1 dùng khi muốn lấy nguồn 5 V từ mạch nạp.
+- **Ngoại vi:** LED, nút nhấn, biến trở, UART, LCD, bàn phím và các header mở rộng. Cách nối chi tiết
+  ở phần phân chân tuần 2.
 
-## 5. Tài liệu tham khảo đã phân loại
+## 5. Tài liệu tham khảo
 
-| Loại | Tài liệu | Dùng cho |
-|------|----------|----------|
-| Datasheet | Microchip, *ATmega16/ATmega16A Datasheet* (DS40002007) | Sơ đồ chân, đặc tính điện, thanh ghi ngoại vi, fuse |
-| Ứng dụng | Microchip *AN2519 – AVR Microcontroller Hardware Design Considerations* | Mạch reset, tụ thoát, lọc AVCC, mạch dao động |
-| Datasheet | LM7805, 1N4007, 1N4148, HD44780 (LCD1602) | Khối nguồn, giao tiếp LCD |
-| Giáo trình | Schematic tham khảo và yêu cầu bài tập do GVHD cung cấp | Đối chiếu kết nối, bài tập tổng hợp |
-| Phần mềm | KiCad 10 – tài liệu Eeschema/Pcbnew; avr-gcc, avr-libc, avrdude | Thiết kế mạch, biên dịch, nạp |
-| Mô phỏng | Proteus 8 / SimulIDE | Chạy thử firmware khi chưa có bo |
+- Microchip, *ATmega16/ATmega16A Datasheet*: sơ đồ chân, đặc tính điện, thanh ghi ngoại vi, fuse.
+- Microchip, *AN2519 – AVR Microcontroller Hardware Design Considerations*: mạch reset, tụ thoát, lọc
+  AVCC, mạch dao động.
+- Datasheet LM7805, 1N4007, 1N4148, HD44780 (LCD1602).
+- Schematic tham khảo và yêu cầu bài tập thầy cung cấp.
+- Tài liệu KiCad, avr-gcc, avr-libc, avrdude; Proteus để mô phỏng.
 
-Bản khảo sát tài liệu chi tiết tuần 1: xem link Google Docs trong `docs/bao-cao-tuan/PhieuBaoCaoTuan1.docx`.
+Bản khảo sát tài liệu đầy đủ của tuần 1 có link trong phiếu báo cáo `docs/bao-cao-tuan/PhieuBaoCaoTuan1.docx`.
