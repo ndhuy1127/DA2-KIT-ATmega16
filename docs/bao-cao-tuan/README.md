@@ -1,7 +1,30 @@
 # Phiếu báo cáo tuần
 
-- Tuần 1: [PhieuBaoCaoTuan1.docx](PhieuBaoCaoTuan1.docx)
-- Tuần 2–5: nội dung bên dưới, chép sang mẫu phiếu Word khi nộp.
+Nội dung từng tuần ở bên dưới, chép sang mẫu phiếu Word khi nộp.
+
+---
+
+## Tuần 1 (16/09 – 22/09/2026) – Tiến độ tích lũy 10 %
+
+**1. Công việc đã hoàn thành**
+- Đọc yêu cầu đề tài và datasheet ATmega16/ATmega16A.
+- Phân tích sơ bộ schematic tham khảo, xác định các khối: nguồn 5 V, clock và reset, ISP, GPIO, ADC, UART,
+  LCD1602 và bàn phím 4×4.
+- Lập sơ đồ khối hệ thống, danh sách yêu cầu chức năng và đầu ra kiểm thử cho các giai đoạn sau.
+
+**2. Minh chứng:** Datasheet ATmega16; tài liệu khảo sát và sơ đồ khối:
+https://docs.google.com/document/d/12TGjtijgjJh1kBNQvoF12PvDoys2WtmYXmpb08b32zs/edit?usp=sharing;
+`docs/tuan-01/yeu-cau-va-so-do-khoi.md`.
+
+**3. Việc chưa hoàn thành:** Phân tích schematic tham khảo của thầy. Lý do là tuần này chưa lên phòng D8-705
+báo cáo. Em sẽ tham khảo trước schematic của các anh chị và bạn bè khóa trước.
+
+**4. Vướng mắc:** Hiện chưa có vướng mắc kỹ thuật.
+
+**5. Kế hoạch tuần sau:**
+- Phân tích chi tiết từng khối và lập bảng phân chân I/O.
+- Chọn linh kiện, footprint; hoàn thiện BOM và chia ra phần mua, mượn, tận dụng.
+- Rà soát nguồn, reset, clock, ISP theo datasheet; chuẩn bị vẽ schematic và chạy ERC.
 
 ---
 

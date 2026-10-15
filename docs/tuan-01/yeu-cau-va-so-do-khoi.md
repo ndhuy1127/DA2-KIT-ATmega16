@@ -68,4 +68,4 @@ flowchart LR
 - Schematic tham khảo và yêu cầu bài tập thầy cung cấp.
 - Tài liệu KiCad, avr-gcc, avr-libc, avrdude; Proteus để mô phỏng.
 
-Bản khảo sát tài liệu đầy đủ của tuần 1 có link trong phiếu báo cáo `docs/bao-cao-tuan/PhieuBaoCaoTuan1.docx`.
+Bản khảo sát tài liệu đầy đủ: https://docs.google.com/document/d/12TGjtijgjJh1kBNQvoF12PvDoys2WtmYXmpb08b32zs/edit?usp=sharing
