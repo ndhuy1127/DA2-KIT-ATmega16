@@ -1,0 +1,86 @@
+** Drc report for KIT-ATmega16.kicad_pcb **
+** Created on 2026-10-15T19:40:03 **
+** Report includes: Errors, Warnings, Exclusions **
+
+** Found 17 DRC violations **
+[silk_edge_clearance]: Silkscreen clipped by board edge
+    Rule: board setup constraints silk; warning
+    @(100.0000 mm, 50.0000 mm): Segment on Edge.Cuts
+    @(246.0000 mm, 49.8500 mm): Reference field of H2
+[silk_edge_clearance]: Silkscreen clipped by board edge
+    Rule: board setup constraints silk; warning
+    @(100.0000 mm, 50.0000 mm): Segment on Edge.Cuts
+    @(104.0000 mm, 49.8500 mm): Reference field of H1
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(186.5000 mm, 109.5000 mm): Reference field of C8
+    @(186.3100 mm, 106.7800 mm): Rectangle of L1 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(220.3200 mm, 81.7300 mm): Arc of D8 on F.Silkscreen
+    @(222.4400 mm, 81.7300 mm): Reference field of D9
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(220.3200 mm, 81.7300 mm): Arc of D8 on F.Silkscreen
+    @(222.4400 mm, 81.7300 mm): Reference field of D9
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(225.4000 mm, 81.7300 mm): Arc of D9 on F.Silkscreen
+    @(227.5200 mm, 81.7300 mm): Reference field of D10
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(227.5200 mm, 81.7300 mm): Reference field of D10
+    @(225.4000 mm, 81.7300 mm): Arc of D9 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(230.4800 mm, 81.7300 mm): Arc of D10 on F.Silkscreen
+    @(232.6000 mm, 81.7300 mm): Reference field of D11
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(230.4800 mm, 81.7300 mm): Arc of D10 on F.Silkscreen
+    @(232.6000 mm, 81.7300 mm): Reference field of D11
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(202.1200 mm, 81.7300 mm): Reference field of D5
+    @(200.0000 mm, 81.7300 mm): Arc of D4 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(202.1200 mm, 81.7300 mm): Reference field of D5
+    @(200.0000 mm, 81.7300 mm): Arc of D4 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(207.2000 mm, 81.7300 mm): Reference field of D6
+    @(205.0800 mm, 81.7300 mm): Arc of D5 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(212.2800 mm, 81.7300 mm): Reference field of D7
+    @(210.1600 mm, 81.7300 mm): Arc of D6 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(212.2800 mm, 81.7300 mm): Reference field of D7
+    @(210.1600 mm, 81.7300 mm): Arc of D6 on F.Silkscreen
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(215.2400 mm, 81.7300 mm): Arc of D7 on F.Silkscreen
+    @(217.3600 mm, 81.7300 mm): Reference field of D8
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(215.2400 mm, 81.7300 mm): Arc of D7 on F.Silkscreen
+    @(217.3600 mm, 81.7300 mm): Reference field of D8
+[silk_overlap]: Silkscreen clearance
+    Rule: board setup constraints silk; warning
+    @(143.0800 mm, 131.6300 mm): Reference field of R12
+    @(139.8100 mm, 128.6300 mm): Rectangle of R11 on F.Silkscreen
+
+** Found 0 unconnected pads **
+
+** Found 0 Footprint errors **
+
+** Ignored checks **
+    - Footprint has no courtyard defined
+    - Track endpoint not centered on via
+    - Tuning profile track geometries
+    - Footprint doesn't match symbol's footprint filters
+    - Footprint component type doesn't match footprint pads
+
+** End of Report **
