@@ -1,0 +1,31 @@
+# Firmware
+firmware/build/
+
+# KiCad: file tạm, backup, khóa
+*.lck
+*-backups/
+*.kicad_prl
+fp-info-cache
+_autosave-*
+\#auto_saved_files#
+
+# Trung gian Freerouting
+hardware/kicad/*.dsn
+hardware/kicad/*.ses
+hardware/kicad/freerouting.log
+hardware/kicad/drc_place.rpt
+
+# Gerber: chỉ giữ các lớp cần gia công (đã đóng gói trong KIT-ATmega16-gerber.zip)
+hardware/output/gerber/*Adhesive*
+hardware/output/gerber/*Paste*
+hardware/output/gerber/*Courtyard*
+hardware/output/gerber/*Fab*
+hardware/output/gerber/*Margin*
+hardware/output/gerber/*User_*
+
+# Python / hệ điều hành
+__pycache__/
+*.pyc
+Thumbs.db
+Desktop.ini
+~$*
